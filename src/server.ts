@@ -13,12 +13,11 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
+app.use(express.json());
+
+app.all('/api/auth/*', toNodeHandler(auth));
 
 const port = process.env.PORT ?? 3000;
-
-app.all('/api/auth/{*any}', toNodeHandler(auth));
-
-app.use(express.json());
  
 app.listen(port, () => {
     console.log(`Better Auth app listening on port ${port}`);
