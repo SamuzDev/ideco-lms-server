@@ -10,14 +10,13 @@ const port = process.env.PORT ?? 3000;
 app.all('/api/auth/{*any}', toNodeHandler(auth));
 
 const corsOptions = {
-  origin: 'https://ideco-lms-client-production.up.railway.app',
+  origin: process.env.CLIENT_URL as string,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
 };
 
 app.use(cors(corsOptions));
-app.options('*', cors(corsOptions));
 
 app.use(express.json());
  
