@@ -17,7 +17,7 @@ app.use(cors(corsOptions));
 
 app.all('/api/auth/*splat', toNodeHandler(auth));
 
-app.use(express.json());
+// app.use(express.json());
  
 app.listen(port, () => {
     console.log(`Better Auth app listening on port ${port}`);
