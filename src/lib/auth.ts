@@ -10,7 +10,7 @@ export const auth = betterAuth({
         provider: "postgresql",
     }),
     trustedOrigins: [
-        process.env.CLIENT_URL as string,
+        process.env.CLIENT_URL as string || "http://localhost:3000",
       ],
     plugins: [
         twoFactor(),
@@ -43,3 +43,5 @@ export const auth = betterAuth({
         },
     },
 });
+
+console.log("Trusted Origins:", auth.options.trustedOrigins);
