@@ -5,10 +5,6 @@ import { auth } from "./lib/auth";
 
 const app = express();
 
-const port = process.env.PORT ?? 3000;
-
-app.all('/api/auth/{*any}', toNodeHandler(auth));
-
 const corsOptions = {
   origin: process.env.CLIENT_URL as string,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
@@ -17,6 +13,10 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
+
+const port = process.env.PORT ?? 3000;
+
+app.all('/api/auth/{*any}', toNodeHandler(auth));
 
 app.use(express.json());
  
