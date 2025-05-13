@@ -4,6 +4,7 @@ import cors from 'cors';
 import { auth } from "./lib/auth";
 
 const app = express();
+const port = process.env.PORT ?? 3000;
 
 const corsOptions = {
   origin: process.env.CLIENT_URL as string,
@@ -11,11 +12,10 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.use(express.json());
 
 app.all('/api/auth/*splat', toNodeHandler(auth));
 
-const port = process.env.PORT ?? 3000;
+app.use(express.json());
  
 app.listen(port, () => {
     console.log(`Better Auth app listening on port ${port}`);
