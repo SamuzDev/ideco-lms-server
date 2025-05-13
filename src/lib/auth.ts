@@ -10,7 +10,7 @@ export const auth = betterAuth({
         provider: "postgresql",
     }),
     trustedOrigins: [
-        process.env.CLIENT_URL as string || "http://localhost:5173",
+        process.env.CLIENT_URL as string, "http://localhost:5173",
       ],
     plugins: [
         twoFactor(),

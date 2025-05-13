@@ -6,12 +6,23 @@ import { auth } from "./lib/auth";
 const app = express();
 const port = process.env.PORT ?? 3000;
 
+const whitelist = [
+  process.env.CLIENT_URL,
+  "http://localhost:5173",
+];
+
 const corsOptions = {
-  origin: process.env.CLIENT_URL as string ?? "http://localhost:5173",
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  origin: function (origin: string | undefined, callback: (error: Error | null, allow?: boolean) => void) {
+    if (!origin || whitelist.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("No permitido por CORS"));
+    }
+  },
   credentials: true,
 };
+
+app.use(cors(corsOptions));
 
 app.use(cors(corsOptions));
 
