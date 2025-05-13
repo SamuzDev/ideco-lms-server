@@ -43,5 +43,3 @@ export const auth = betterAuth({
         },
     },
 });
-
-console.log("Trusted Origins:", auth.options.trustedOrigins);
