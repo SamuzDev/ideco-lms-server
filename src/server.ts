@@ -24,9 +24,12 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-app.use(cors(corsOptions));
+// app.all('/api/auth/*splat', toNodeHandler(auth));
 
-app.all('/api/auth/*splat', toNodeHandler(auth));
+app.all("/api/auth/*splat", (req, res) => {
+  console.log("Auth request:", req.method, req.url, req.headers, req.body);
+  toNodeHandler(auth)(req, res);
+});
 
 app.use(express.json());
  
