@@ -13,7 +13,9 @@ export const auth = betterAuth({
         process.env.CLIENT_URL as string, "http://localhost:5173",
       ],
     plugins: [
-        twoFactor(),
+        twoFactor({
+            skipVerificationOnEnable: true,
+        }),
     ],
     appName: "Ideco LMS",
     emailAndPassword: {
