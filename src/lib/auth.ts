@@ -23,7 +23,6 @@ export const auth = betterAuth({
         maxPasswordLength: 20,
         // requireEmailVerification: true,
         // Send email with token
-        asResponse: true,
         sendResetPassword: async ({ user, token }) => {
             await resend.emails.send({
                 from: "Acme <onboarding@resend.dev>",
