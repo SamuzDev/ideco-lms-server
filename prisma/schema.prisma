@@ -1,0 +1,258 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               String      @id @default(uuid())
+  name             String
+  email            String
+  emailVerified    Boolean
+  image            String?
+  createdAt        DateTime
+  updatedAt        DateTime
+  role             String?
+  banned           Boolean?
+  banReason        String?
+  banExpires       DateTime?
+  twoFactorEnabled Boolean?
+  sessions         Session[]
+  accounts         Account[]
+  twofactors       TwoFactor[]
+
+  enrollments      Enrollment[]
+  courses          Course[]       @relation("InstructorCourses")
+  posts            Post[]
+  messagesSent     Message[]      @relation("SentMessages")
+  messagesReceived Message[]      @relation("ReceivedMessages")
+  grades           Grade[]
+  notifications    Notification[]
+
+  @@unique([email])
+  @@map("users")
+}
+
+model Session {
+  id             String   @id @default(uuid())
+  expiresAt      DateTime
+  token          String
+  createdAt      DateTime
+  updatedAt      DateTime
+  ipAddress      String?
+  userAgent      String?
+  userId         String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  impersonatedBy String?
+
+  @@unique([token])
+  @@map("sessions")
+}
+
+model Account {
+  id                    String    @id @default(uuid())
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime
+  updatedAt             DateTime
+
+  @@map("accounts")
+}
+
+model Verification {
+  id         String    @id @default(uuid())
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime?
+  updatedAt  DateTime?
+
+  @@map("verifications")
+}
+
+model Jwks {
+  id         String   @id @default(uuid())
+  publicKey  String
+  privateKey String
+  createdAt  DateTime
+
+  @@map("jwks")
+}
+
+model TwoFactor {
+  id          String @id @default(uuid())
+  secret      String
+  backupCodes String
+  userId      String
+  user        User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("twoFactors")
+}
+
+model Category {
+  id          String  @id @default(uuid())
+  name        String  @unique
+  description String?
+
+  courses Course[]
+
+  @@map("categories")
+}
+
+model Course {
+  id           String          @id @default(uuid())
+  title        String
+  description  String?
+  createdAt    DateTime        @default(now())
+  categoryId   String?
+  category     Category?       @relation(fields: [categoryId], references: [id])
+  instructorId String?
+  instructor   User?           @relation("InstructorCourses", fields: [instructorId], references: [id])
+  enrollments  Enrollment[]
+  resources    Resource[]
+  assignments  Assignment[]
+  forums       Forum[]
+  sessions     CourseSession[]
+  quizzes      Quiz[]
+
+  @@map("courses")
+}
+
+model Enrollment {
+  id             String   @id @default(uuid())
+  enrollmentDate DateTime @default(now())
+  userId         String
+  courseId       String
+  user           User     @relation(fields: [userId], references: [id])
+  course         Course   @relation(fields: [courseId], references: [id])
+
+  @@unique([userId, courseId])
+  @@map("enrollments")
+}
+
+model Resource {
+  id        String   @id @default(uuid())
+  title     String
+  url       String
+  createdAt DateTime @default(now())
+  courseId  String
+  course    Course   @relation(fields: [courseId], references: [id])
+
+  @@map("resources")
+}
+
+model Assignment {
+  id          String    @id @default(uuid())
+  title       String
+  description String?
+  dueDate     DateTime?
+  createdAt   DateTime  @default(now())
+  courseId    String
+  course      Course    @relation(fields: [courseId], references: [id])
+  grades      Grade[]
+
+  @@map("assignments")
+}
+
+model Grade {
+  id           String     @id @default(uuid())
+  grade        Decimal    @db.Decimal(5, 2)
+  createdAt    DateTime   @default(now())
+  assignmentId String
+  userId       String
+  assignment   Assignment @relation(fields: [assignmentId], references: [id])
+  user         User       @relation(fields: [userId], references: [id])
+
+  @@map("grades")
+}
+
+model Forum {
+  id        String   @id @default(uuid())
+  title     String
+  createdAt DateTime @default(now())
+  courseId  String
+  course    Course   @relation(fields: [courseId], references: [id])
+  posts     Post[]
+
+  @@map("forums")
+}
+
+model Post {
+  id        String   @id @default(uuid())
+  content   String
+  createdAt DateTime @default(now())
+  forumId   String
+  userId    String
+  forum     Forum    @relation(fields: [forumId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@map("posts")
+}
+
+model Message {
+  id         String   @id @default(uuid())
+  content    String
+  createdAt  DateTime @default(now())
+  senderId   String?
+  receiverId String?
+  sender     User?    @relation("SentMessages", fields: [senderId], references: [id])
+  receiver   User?    @relation("ReceivedMessages", fields: [receiverId], references: [id])
+
+  @@map("messages")
+}
+
+model CourseSession {
+  id          String   @id @default(uuid())
+  sessionDate DateTime
+  duration    Int
+  createdAt   DateTime @default(now())
+  courseId    String
+  course      Course   @relation(fields: [courseId], references: [id])
+
+  @@map("course_sessions")
+}
+
+model Quiz {
+  id        String         @id @default(uuid())
+  title     String
+  createdAt DateTime       @default(now())
+  courseId  String
+  course    Course         @relation(fields: [courseId], references: [id])
+  questions QuizQuestion[]
+
+  @@map("quizzes")
+}
+
+model QuizQuestion {
+  id        String   @id @default(uuid())
+  question  String
+  answer    String
+  createdAt DateTime @default(now())
+  quizId    String
+  quiz      Quiz     @relation(fields: [quizId], references: [id])
+
+  @@map("quiz_questions")
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  message   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@map("notifications")
+}

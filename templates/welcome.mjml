@@ -1,0 +1,43 @@
+<mjml>
+  <mj-head>
+    <mj-attributes>
+      <mj-all font-family="Helvetica, Arial, sans-serif" />
+      <mj-text color="#e5e7eb" line-height="1.6" />
+      <mj-button background-color="#3B82F6" color="#ffffff" font-size="14px" />
+    </mj-attributes>
+    <mj-style inline="inline"> a { color: #60a5fa; text-decoration: none; } </mj-style>
+  </mj-head>
+  <mj-body background-color="#111827">
+    <mj-section padding="30px 0">
+      <mj-column>
+        <mj-image
+          src="https://i.ibb.co/wBLqXKs/ideco-logo.png"
+          width="80px"
+          alt="Ideco LMS"
+          padding-bottom="15px"
+        />
+        <mj-text font-size="20px" font-weight="bold" align="center" padding="0 20px">
+          Welcome to Ideco LMS Server
+        </mj-text>
+        <mj-text font-size="14px" align="center" padding="10px 20px">
+          You’ve reached the backend of <strong>Ideco LMS</strong>. Manage authentication, courses,
+          notifications, and more.
+        </mj-text>
+        <mj-button
+          href="{{BETTER_AUTH_URL}}/api/auth/reference"
+          align="center"
+          border-radius="4px"
+          padding="12px 24px"
+        >
+          API Documentation
+        </mj-button>
+        <mj-text font-size="12px" align="center" color="#9ca3af" padding="20px 20px 10px">
+          Need help? <a href="mailto:support@ideco.com">support@ideco.com</a>
+        </mj-text>
+        <mj-text font-size="11px" align="center" color="#6b7280" padding="0 20px">
+          © 2025 Ideco. All rights reserved.
+        </mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>
